@@ -1,0 +1,14 @@
+names:
+  - fire
+  - smoke
+nc: 2
+roboflow:
+  license: CC BY 4.0
+  project: deteksiasapdanapi
+  url: https://universe.roboflow.com/projectai-6neok/deteksiasapdanapi/dataset/4
+  version: 4
+  workspace: projectai-6neok
+path: /Users/murat/Desktop/fireandsmoke/DeteksiAsapDanApi-4
+test: test/images
+train: train/images
+val: valid/images
