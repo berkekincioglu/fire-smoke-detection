@@ -1,9 +1,7 @@
 import socket
-import struct
-
 
 def main():
-    host = "127.0.0.1"  # Localhost
+    host = "127.0.0.1" 
     port = 3030
 
     # Start a TCP server
@@ -13,14 +11,16 @@ def main():
 
         print(f"Server listening on {host}:{port}")
 
-        # Accept a connection
-        conn, addr = server_socket.accept()
-        with conn:
-            print(f"Connected by {addr}")
-
-            # Receive data from the client
-            data = conn.recv(24)
-            print(f"Received data from client: {data}")
+        while True:
+            conn, addr = server_socket.accept()
+            with conn:
+                print(f"Connected by {addr}")
+                while True:  
+                    data = conn.recv(1024)
+                    if not data:
+                        break
+                    decoded_data = data.decode("utf-8") 
+                    print(f"Received data from client: {decoded_data}")
 
 
 if __name__ == "__main__":

@@ -13,24 +13,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-
-# Function to send fire detection information to the ESP32
-# def send_fire_detection(frame, tracked_ids):
-#     # Convert the frame to bytes
-#     _, img_bytes = cv2.imencode(".jpg", frame)
-#     frame_bytes = img_bytes.tobytes()
-
-#     # Send data to the ESP32 via socket
-#     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-#         host = "127.0.0.1"  # Replace with the ESP32 IP address
-#         port = 3030
-#         s.connect((host, port))
-
-#         message = "Fire detected"
-
-#         s.sendall(struct.pack("3f", 0.9, message, len(frame_bytes)) + frame_bytes)
-
-
 def send_fire_detection(payload):
     # Convert payload to JSON string
     payload_json = json.dumps(payload)
@@ -49,8 +31,8 @@ def send_fire_detection(payload):
 def detect_objects(current_frame, current_tracked_ids):
     results = model.track(
         source=current_frame,
-        conf=0.5,  # Adjusted confidence
-        iou=0.5,  # Adjusted IoU
+        conf=0.6,
+        iou=0.5, 
         imgsz=640,
         show=True,
         stream=True,
@@ -62,15 +44,14 @@ def detect_objects(current_frame, current_tracked_ids):
     message = "Fire detected"
 
     for result in results:
-        if result.boxes is not None and result.boxes.id is not None:
-            conf = result.boxes.conf
-            fire_detected = True
+        if result.boxes is not None and result.boxes.conf is not None:
+            conf_tensor = result.boxes.conf
+            if conf_tensor.numel() == 1: 
+                conf = float(conf_tensor.item()) 
+                fire_detected = True
+                break 
 
     if fire_detected:
-        # Ensure conf is serializable
-        conf = float(conf)  # Convert conf to a serializable type
-
-        # Create payload
         payload = {
             "confidence": conf,
             "message": message,
@@ -107,3 +88,16 @@ if __name__ == "__main__":
     cap.release()
     cv2.destroyAllWindows()
     socketio.run(app)
+
+
+
+0.7 | 170
+
+(50-100) (100-255)
+
+a = (0, 255)
+b = (0, 255)
+c = (0, 255)
+d = (0, 255)
+e = (0, 255)
+f = (0, 255)
