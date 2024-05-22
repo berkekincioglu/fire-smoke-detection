@@ -2,7 +2,7 @@ import socket
 import struct
 
 def main():
-    host = "192.168.1.92"
+    host = "192.168.4.1"
     port = 3030
     lookup_dict = {
         0 : 'Flame1',
